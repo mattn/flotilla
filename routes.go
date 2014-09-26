@@ -57,7 +57,7 @@ func NewRoute(method string, path string, static bool, handlers []HandlerFunc) *
 	r := &Route{method: method, static: static, handlers: handlers}
 	if static {
 		if fp := strings.Split(path, "/"); fp[len(fp)-1] != "*filepath" {
-			r.base = filepath.Join(path, "/*filepath")
+			r.base = filepath.ToSlash(filepath.Join(path, "/*filepath"))
 		} else {
 			r.base = path
 		}
@@ -153,7 +153,7 @@ func (rg *RouterGroup) handlerExists(outside HandlerFunc) bool {
 }
 
 func (rg *RouterGroup) pathFor(path string) string {
-	joined := filepath.Join(rg.prefix, path)
+	joined := filepath.ToSlash(filepath.Join(rg.prefix, path))
 	// Append a '/' if the last component had one, but only if it's not there already
 	if len(path) > 0 && path[len(path)-1] == '/' && joined[len(joined)-1] != '/' {
 		return joined + "/"
